@@ -38,7 +38,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build CPython installer
-      run: .\Tools\msi\build.bat -x86
+      run: .\Tools\msi\buildrelease.bat -x86
 
   build_win_amd64:
     name: 'Windows (x64) Installer'
@@ -47,7 +47,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build CPython installer
-      run: .\Tools\msi\build.bat -x64
+      run: .\Tools\msi\buildrelease.bat -x64
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts311
+        path: |
+          PCbuild/amd64/
 
   build_win_arm64:
     name: 'Windows (ARM64) Installer'
