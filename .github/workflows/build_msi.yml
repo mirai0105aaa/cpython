@@ -1,4 +1,4 @@
-name: TestsMSI
+name: TestsMSI_311
 
 on:
   workflow_dispatch:
