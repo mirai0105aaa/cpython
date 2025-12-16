@@ -1,0 +1,34 @@
+#1. リポジトリのチェックアウト
+- name: Checkout CPython source code
+  uses: actions/checkout@v4
+  with:
+          # CPython 3.11の安定版タグを指定（例: v3.11.8）
+          # 任意の3.11系タグに変更してください。
+          ref: 'v3.11.14' 
+
+# 2. 外部依存関係のダウンロード
+# CPythonのビルドに必要な外部ライブラリ（SSL、zlibなど）をダウンロードします。
+- name: Get external dependencies
+  run: .\PCbuild\get_externals.bat
+
+# 3. CPythonのコンパイル
+# 64ビット（x64）のリリース設定でPythonバイナリをビルドします。
+# GitHub Actionsのランナーには、Visual Studioのビルドツールが自動的にセットアップされています。
+- name: Build CPython binaries (Release x64)
+  run: .\PCbuild\build.bat -e -p x64
+
+# 4. MSIインストーラーのビルド
+# コンパイル済みのバイナリを使用してMSIファイルを生成します。
+- name: Build MSI Installer
+  run: .\Tools\msi\build.bat
+
+# 5. MSIファイルの検索とアップロード
+# 生成されたMSIファイルをアーティファクトとして保存し、ダウンロード可能にします。
+- name: Upload MSI Installer as Artifact
+  uses: actions/upload-artifact@v4
+  with:
+
+- name: CPython-3.11-MSI-Installer
+ # MSIファイルは通常、PCbuild\_msi\x64またはPCbuild\_msiに出力されます
+ path: .\PCbuild\_msi\*.msi
+ retention-days: 7 # アーティファクトの保持期間（7日間）
